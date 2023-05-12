@@ -2,7 +2,6 @@ const express = require("express");
 const favIcon = require("serve-favicon");
 const bodyParser = require("body-parser");
 
-const morgan = require("morgan");
 import { initDb } from './db/sequilize';
 import authenticateUser from './routes/login';
 import createPokemon from './routes/createPokemon';
@@ -13,12 +12,11 @@ import updatePokemon from './routes/updatePokemon';
 
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 
  
 app.use(favIcon(__dirname + "/resources/favicon.ico"))
-.use(morgan('dev'))
 .use(bodyParser.json());  
 
 initDb();
