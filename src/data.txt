@@ -1,0 +1,103 @@
+mon premier fichier ecrit
+
+import { Sequelize, DataTypes } from "sequelize";
+import { PokemonModel } from "./models/pokemon.model";
+
+const express = require("express");
+const myModule = require("./modules/concatainer");
+const concatName2 = require("./modules/concatainer");
+const { success, getUniqueId } = require('./modules/helper');
+const rw = require("./modules/filesSystem");
+let pokemons = require("./db/mock-pokemon") as PokemonModel[];
+const favIcon = require("serve-favicon");
+const bodyParser = require("body-parser");
+
+const morgan = require("morgan");
+const PokemonModelSql = require('./models/pokemon.sequilize');
+
+
+
+sequelize.authenticate()
+.then(() => console.log('la bd a été bien connecté'))
+.catch((err)=> console.error(err))
+
+const app = express();
+const port = 3000;
+
+const Pokemon = PokemonModelSql(sequelize, DataTypes);
+/**
+ * force true permet de supprimer tous les elements de la table avant chaque synchronisation de donnees
+ */
+sequelize.sync({force: true})
+.then(()=> {
+    console.log('la base de données "pokedex" à bien été crée.');
+    pokemons.map((pokemon) => {
+        Pokemon.create({name: pokemon.name, hp: pokemon.hp, cp: pokemon.cp, picture: pokemon.picture, types: pokemon.types.join()})
+        .then((data)=> console.log(data.toJSON()));
+    })
+})
+
+rw.writeMytext("mon premier fichier ecrit");
+rw.readText();
+ 
+app.use(favIcon(__dirname + "/resources/favicon.ico"))
+.use(morgan('dev'))
+.use(bodyParser.json());
+
+
+app.get('/', (req, res) => res.send("Hello, Express 2👌!"));
+app.get('/api/pokemon/:var', (req, resp) => {
+    const id = req.params.var;
+    
+    resp.send(`Vous avez demandé le pokemon ${id}`)
+});
+
+app.get('/api/pokemon/:var/edit/:edit', (req, resp) => {
+    const id = req.params.var;
+    const edit = req.params.edit;
+    
+    resp.send(`Vous avez demandé le pokemon ${id} ${edit}`)
+})
+
+app.get(`/api/findPokemon/:id`, (req, resp) => {
+    const id = req.params.id;
+    const pokemon = pokemons.find(pokemon => pokemon.id == id);
+    const message = 'un pokemon a été trouvé'
+    resp.json(success(message, pokemon));
+});
+
+app.get(`/api/pokemons`, (req, resp) => {
+    const message = `une liste de ${pokemons.length} a été retrouvé!`
+    resp.json(success(message, pokemons));
+});
+
+app.post('/api/addpokemon', (req, res) => {
+    const id = getUniqueId(pokemons);
+    let pokemon: PokemonModel;
+    pokemon = {...req.body, ...{id: id, created: new Date()}};
+    pokemons.push(pokemon);
+    const message = `le pokemom ${pokemon.name} a été créé avec succès`;
+    res.json(success(message, pokemon));
+});
+
+app.put('/api/editPokemon/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const pokemonUpdated = { ...req.body, id };
+    pokemons = pokemons.map(pokemon => {
+        return pokemon.id == id ? pokemonUpdated: pokemon
+    });
+
+    const message = `Le pokemon ${pokemonUpdated.name} a été modifié`;
+
+    res.json(success(message, pokemonUpdated));
+});
+
+app.delete('/api/deletePokemon/:id', (req, res)=> {
+    const id = parseInt(req.params.id);
+    const pokemonDeleted = pokemons.find(pokemon => pokemon.id == id);
+    pokemons.filter(pokemon => pokemon.id !== id);
+    const message = `Le pokemon ${pokemonDeleted.name} a été supprimé`;
+    res.json(success(message, pokemonDeleted));
+})
+
+app.listen(port, ()=> console.log(`Notre application Node est demarrée sur : http://localhost:${port}`));
