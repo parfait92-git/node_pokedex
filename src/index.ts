@@ -20,7 +20,9 @@ app.use(favIcon(__dirname + "/resources/favicon.ico"))
 .use(bodyParser.json());  
 
 initDb();
-
+app.get('/', (req, res) => {
+    res.json("hello, Heroku app")
+})
 listAllPokemon(app);
 findPokemonById(app);
 createPokemon(app);
