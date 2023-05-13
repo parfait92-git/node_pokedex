@@ -9,7 +9,7 @@ import deletePokemon from './routes/deletePokemon';
 import listAllPokemon from './routes/findAllPokemons';
 import findPokemonById from './routes/findPokemonById';
 import updatePokemon from './routes/updatePokemon';
-
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,7 +17,8 @@ const port = process.env.PORT || 3000;
 
  
 app.use(favIcon(__dirname + "/resources/favicon.ico"))
-.use(bodyParser.json());  
+.use(bodyParser.json())
+.use(cors());  
 
 initDb();
 app.get('/', (req, res) => {
