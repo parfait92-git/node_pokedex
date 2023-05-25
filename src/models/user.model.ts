@@ -1,6 +1,6 @@
 import { Address } from "./address";
 
-export class User{
+export default class User{
     private id: string;
     private firstName: string;
     private lastName: string;

@@ -8,7 +8,7 @@ export default function deletePokemon(app: any) {
         .then((pokemons  => {
             if (pokemons === null) {
                 const message = 'Le pokemon n\'existe pas, réessayez un autre identifiant';
-                return res.status.json(message);
+                return res.status(404).json(message);
             }
             const pokemonDeleted = pokemons;
           return  Pokemon.destroy({

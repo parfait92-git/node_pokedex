@@ -3,7 +3,16 @@ import { Pokemon } from '../db/sequilize';
 import auth from '../auth/auth';
 const { Op } = require('sequelize');
 
-
+/**
+ * @swagger 
+ * /:
+ * get: 
+ *      summary: this api is used to list all pokemon
+ *      description: this api test if the api works or not
+ *      responses: 
+ *               200: 
+ *                  description: the api works
+ */
 export default function listAllPokemon(app: any) {
     app.get('/api/pokemons', auth, (req: Request, res: Response) => {
         const reqLimit = parseInt(req.query.limit);

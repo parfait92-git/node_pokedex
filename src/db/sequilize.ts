@@ -14,9 +14,7 @@ const sequelize = new Sequelize('pokedexdb', 'root', '', {
   })
 
 export const Pokemon = definePokemon(sequelize, DataTypes);
-export const User = userModel(sequelize, DataTypes);
-
-const password =  'Parfait92';
+export const User = userModel(sequelize, DataTypes)
 
 export const initDb = () => {
     return sequelize.sync({force: true})
@@ -26,13 +24,6 @@ export const initDb = () => {
             Pokemon.create({name: pokemon.name, hp: pokemon.hp, cp: pokemon.cp, picture: pokemon.picture, types: pokemon.types})
             .then((data)=> console.log(data.toJSON()));
         });
-        bcrypt.hash(password, 10)
-        .then(hash => {
-            User.create({
-                username: 'parfait92',
-                password: hash
-            }).then(user => console.log(user.toJSON()))
-        })
         
     })
 }

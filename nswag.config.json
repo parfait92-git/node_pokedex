@@ -1,0 +1,9 @@
+{
+    "runtime": "node",
+    "input": "C:/Users/parfait92/Documents/project\\ node/projet_test/api-spec.json",
+    "output": "C:/Users/parfait92/Documents/project\\ node/projet_test",
+    "codeGenerator": "typescript",
+    "codeGeneratorSettings": {
+      "moduleName": "myGeneratedClient"
+    }
+  }
